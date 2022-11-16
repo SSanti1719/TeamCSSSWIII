@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "Z4w/ICMKUVtr3hRSNzvL12pRpmyfYyRz1AgG9NgRlHU=",
+  "Source": "API_REST_JobTime",
+  "BasePath": "_content/API_REST_JobTime",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
