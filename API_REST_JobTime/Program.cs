@@ -1,11 +1,12 @@
-using API_REST_JobTime.Entity;
+using API_REST_JobTime.Utilities;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-Conection.CadenaSQL = builder.Configuration.GetConnectionString("default");
+var cadenaSQL = builder.Configuration.GetConnectionString("default");
 
 builder.Services.AddControllers();
+builder.Services.AddSingleton(new Conection(cadenaSQL));
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

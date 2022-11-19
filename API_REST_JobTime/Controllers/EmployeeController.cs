@@ -1,9 +1,13 @@
-﻿using API_REST_JobTime.Entity;
+﻿using API_REST_JobTime.AppCode.Converters;
+using API_REST_JobTime.Entity;
+using API_REST_JobTime.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.VisualBasic;
 using System.Collections.ObjectModel;
+using System.Data;
+using System.Text.Json;
 
 namespace API_REST_JobTime.Controllers
 {
@@ -11,38 +15,36 @@ namespace API_REST_JobTime.Controllers
     [ApiController]
     public class EmployeeController : ControllerBase
     {
+        private readonly Conection db;
+        public EmployeeController(Conection db)
+        {
+            this.db = db;
+        }
+
         [HttpGet("GetEmployee")]
-        public Collection<Employee> GetEmployee()
+        public async Task<IActionResult> GetEmployee()
         {
-            var lista = new Collection<Employee>();
-            using (var conection = new SqlConnection(Conection.CadenaSQL))
-            {
-                using (var dbemployee = new SqlDataAdapter("Select * From JobTime.dbo.Employee", conection))
-                {
-                    conection.Open();
-                    var reader = dbemployee.SelectCommand.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        var employee = new Employee();
-                        employee.EmployeeID = reader.GetInt32(0);
-                        employee.Nombre = reader.GetString(1);
-                        employee.Apellido = reader.GetString(2);
-                        employee.Direccion = reader.GetString(3);
-                        employee.Ciudad = reader.GetString(4);
-                        lista.Add(employee);
-                    }
-                }
-            }
-            return lista;
-            
+            return await db.TableResult("dbo.JobTime_Get_Employee");            
         }
 
-        [HttpPost("PostEmployee")]
-        public Collection<Employee> PostEmployee()
+        [HttpPost("[action]")]
+        public async Task<IActionResult> PostEmployee(Employee employee)
         {
-            return null;
+            var Params = new Collection<SqlParameter>();
+            Params.Add(new SqlParameter("@Nit", employee.Nit));
+            Params.Add(new SqlParameter("@Name", employee.Name));
+            Params.Add(new SqlParameter("@Email", employee.Email));
+            Params.Add(new SqlParameter("@JobTitle", employee.JobTitle));
+            return await db.PostResult("dbo.JobTime_Post_Employee", Params);
         }
 
+        [HttpDelete("[action]")]
+        public async Task<IActionResult> DeleteEmployee(string Nit)
+        {
+            var Params = new Collection<SqlParameter>();
+            Params.Add(new SqlParameter("@Nit", Nit));
+            return await db.PostResult("dbo.JobTime_Delete_Employee", Params);
+        }
 
     }
 }
