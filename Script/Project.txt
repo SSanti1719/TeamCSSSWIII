@@ -1,0 +1,64 @@
+CREATE TABLE Project (
+Id varchar(255) NOT NULL,
+NitClient varchar(255) NOT NULL,
+Name varchar(255) NOT NULL,
+SalesHours decimal(3) NOT NULL,
+PRIMARY KEY (Id),
+FOREIGN KEY (NitClient) REFERENCES dbo.Client(Nit)
+);
+
+CREATE PROCEDURE JobTime_Get_Project
+AS
+BEGIN
+  SELECT * FROM dbo.Project; 
+END
+
+Exec dbo.JobTime_Get_Project
+
+CREATE PROCEDURE JobTime_Post_Project
+@Id varchar(255),
+@NitClient varchar(255),
+@Name varchar(255),
+@SalesHours varchar(255)
+AS
+BEGIN	
+	IF EXISTS(SELECT 1 FROM dbo.Project WHERE Id = @Id)
+	BEGIN
+	    UPDATE dbo.Project
+		SET NitClient = @NitClient,
+			Name = @Name,
+			SalesHours = @SalesHours
+		WHERE Id = @Id;
+	END
+	ELSE
+	BEGIN
+		INSERT dbo.Project
+		( Id, NitClient, Name,SalesHours )
+		VALUES
+		( @Id, @NitClient,@Name,@SalesHours)
+	END
+END
+
+CREATE PROCEDURE JobTime_Delete_Project
+@Id varchar(255)
+AS
+BEGIN
+	SET DATEFORMAT DMY;
+	SET LANGUAGE SPANISH;
+	DECLARE @MsgError NVARCHAR(MAX) = '';	
+	BEGIN TRY
+	    IF NOT EXISTS(SELECT 1 FROM dbo.Project WHERE Id = @Id)
+		BEGIN
+			SET @MsgError = 'The Project with Id: ' + CONVERT(VARCHAR(10), @Id) + ' does not exist.';
+			RAISERROR(@MsgError, 16, 217);
+		END
+		ELSE
+		BEGIN
+			DELETE dbo.Project WHERE Id = @Id	    
+		END
+	END TRY
+	BEGIN CATCH
+	    SET @MsgError = ERROR_MESSAGE();
+		RAISERROR(@MsgError, 16, 217);
+	END CATCH
+END
