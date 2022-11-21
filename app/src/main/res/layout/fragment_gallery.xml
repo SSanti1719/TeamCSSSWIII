@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:context=".MainActivity">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/lblTitAsignar"
+                android:layout_width="387dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="51dp"
+                android:layout_marginEnd="8dp"
+                android:text="Asignación de Proyectos a Empleado"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/lblEmpleados"
+                android:layout_width="114dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="44dp"
+                android:layout_marginTop="65dp"
+                android:layout_marginEnd="297dp"
+                android:layout_marginBottom="8dp"
+                android:text="Empleados" />
+
+            <Spinner
+                android:id="@+id/spEmpleados"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginStart="40dp"
+                android:layout_marginEnd="40dp" />
+
+            <TextView
+                android:id="@+id/lblProyecto"
+                android:layout_width="114dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="44dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginEnd="297dp"
+                android:text="Proyecto" />
+
+            <Spinner
+                android:id="@+id/spProyectos"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="40dp" />
+
+            <TextView
+                android:id="@+id/lblHorasComp"
+                android:layout_width="184dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginEnd="227dp"
+                android:text="Horas Comprometidas" />
+
+            <EditText
+                android:id="@+id/etHorasComp"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="17dp"
+                android:layout_marginEnd="40dp"
+                android:ems="10"
+                android:inputType="number" />
+
+            <TextView
+                android:id="@+id/lblFechaEntr"
+                android:layout_width="114dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="44dp"
+                android:layout_marginTop="38dp"
+                android:layout_marginEnd="258dp"
+                android:text="Fecha de Entrega" />
+
+            <EditText
+                android:id="@+id/etFechaEntr"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginEnd="40dp"
+                android:ems="10"
+                android:inputType="datetime" />
+
+            <Button
+                android:id="@+id/btnAsignar"
+                android:layout_width="114dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="49dp"
+                android:layout_marginEnd="162dp"
+                android:layout_marginBottom="40dp"
+                android:text="Asignar" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
