@@ -1,0 +1,62 @@
+CREATE TABLE HoursReport(
+Id Int NOT NULL,
+IdAssign Int NOT NULL,
+TimeWorked Float NOT NULL,
+PRIMARY KEY (Id),
+FOREIGN KEY (IdAssign) REFERENCES dbo.Assign(Id));
+
+CREATE PROCEDURE JobTime_Get_HoursReport
+AS
+BEGIN
+  SELECT * FROM dbo.HoursReport; 
+END
+
+Exec dbo.JobTime_Get_HoursReport
+
+
+CREATE PROCEDURE JobTime_Post_HoursReport
+@Id INT,
+@IdAssign INT,
+@TimeWorked FLOAT
+AS
+BEGIN	
+	IF EXISTS(SELECT 1 FROM dbo.HoursReport WHERE Id = @Id)
+	BEGIN
+	    UPDATE dbo.HoursReport
+		SET IdAssign = @IdAssign,
+			TimeWorked = @TimeWorked
+		WHERE Id = @Id;
+	END
+	ELSE
+	BEGIN
+	    SELECT @Id = ISNULL(MAX(Id), 0) + 1 FROM dbo.HoursReport;
+		INSERT dbo.HoursReport
+		( Id, IdAssign, TimeWorked)
+		VALUES
+		( @Id, @IdAssign, @TimeWorked)
+	END
+END
+
+CREATE PROCEDURE JobTime_Delete_HoursReport
+@Id varchar(255)
+AS
+BEGIN
+	SET DATEFORMAT DMY;
+	SET LANGUAGE SPANISH;
+	DECLARE @MsgError NVARCHAR(MAX) = '';	
+	BEGIN TRY
+	    IF NOT EXISTS(SELECT 1 FROM dbo.HoursReport WHERE Id = @Id)
+		BEGIN
+			SET @MsgError = 'The Assign with Id: ' + CONVERT(VARCHAR(10), @Id) + ' does not exist.';
+			RAISERROR(@MsgError, 16, 217);
+		END
+		ELSE
+		BEGIN
+			DELETE dbo.HoursReport WHERE Id = @Id	    
+		END
+	END TRY
+	BEGIN CATCH
+	    SET @MsgError = ERROR_MESSAGE();
+		RAISERROR(@MsgError, 16, 217);
+	END CATCH
+END
