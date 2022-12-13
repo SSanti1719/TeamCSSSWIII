@@ -9,5 +9,5 @@
 
     <string name="menu_home">Inicio</string>
     <string name="menu_gallery">Empleados</string>
-    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_slideshow">Calendario</string>
 </resources>
