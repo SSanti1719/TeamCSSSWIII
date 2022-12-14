@@ -9,22 +9,48 @@ const REQUEST_PROMISE = require('request-promise')
  * @param {string} prefix 
  * @returns 
  */
-async function post(prefix) {
+async function post(prefix, body) {
+
+    let request = "",
+        requestResponse = "",
+        responseBody = "";
 
     try {
 
-        let request = {
-            method: 'POST',
-            url: API_REST_CONFIG.URL + prefix,
-            rejectUnauthorized: false,
-            requestCert: false,
-            agent: false,
-            strictSSL: false,
-            resolveWithFullResponse: true
-        };
+        if (!body) {
 
-        let requestResponse = await REQUEST_PROMISE(request);
-        let responseBody = JSON.parse(requestResponse.body);
+            request = {
+                method: 'POST',
+                url: API_REST_CONFIG.URL + prefix,
+                rejectUnauthorized: false,
+                requestCert: false,
+                agent: false,
+                strictSSL: false,
+                resolveWithFullResponse: true
+            };
+
+            requestResponse = await REQUEST_PROMISE(request);
+            responseBody = JSON.parse(requestResponse.body);
+
+        } else {
+
+            request = {
+                method: 'POST',
+                url: API_REST_CONFIG.URL + prefix,
+                body: body,
+                json: true,
+                rejectUnauthorized: false,
+                requestCert: false,
+                agent: false,
+                strictSSL: false,
+                resolveWithFullResponse: true
+            };
+
+            requestResponse = await REQUEST_PROMISE(request);
+            responseBody = requestResponse.body;
+
+        }
+        console.log("BODY: " + JSON.stringify(body));
 
         if (responseBody.success === 1) {
             return { status: 201, estado: true, mensaje: 'Exitoso', data: responseBody };
@@ -33,6 +59,7 @@ async function post(prefix) {
         }
 
     } catch (ex) {
+        console.log("500: " + ex.message);
         return { status: 500, estado: false, mensaje: ex.message };
     }
 

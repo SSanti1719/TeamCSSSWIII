@@ -4,6 +4,7 @@ const { Client, LocalAuth } = require('whatsapp-web.js');
 const MESSAGES = require('./messages/general-messages.json');
 const HELPERS = require('./helpers/helpers');
 const ASSIGN = require('./controllers/assign');
+const HOURS_REGISTER = require('./controllers/hours');
 
 var arrayChat = null;
 
@@ -45,7 +46,9 @@ client.on("message", async(message) => {
 
     let mensaje = "",
         assignData = "",
-        assignResponse = "";
+        hoursData = "",
+        assignResponse = "",
+        hoursResponse = "";
 
     try {
 
@@ -89,6 +92,12 @@ client.on("message", async(message) => {
             arrayChat[posicion].state = "assign";
             client.sendMessage(message.from, MESSAGES.message_8);
 
+        } else if (message.body.toString().trim() === "3" && arrayChat[posicion].state === "option") {
+
+            arrayChat[posicion].opcion = message.body.toString().trim();
+            arrayChat[posicion].state = "hours";
+            client.sendMessage(message.from, MESSAGES.message_13);
+
         } else if (["1", "2", "3", "4"].includes(arrayChat[posicion].opcion.toString().trim()) && arrayChat[posicion].state === "assign") {
 
             assignData = message.body.toString().trim();
@@ -104,6 +113,44 @@ client.on("message", async(message) => {
                 client.sendMessage(message.from, assignResponse);
 
             }
+
+            arrayChat[posicion].state = "option";
+            arrayChat[posicion].errores = 0;
+            arrayChat[posicion].opcion = 0;
+            client.sendMessage(message.from, MESSAGES.message_7);
+            client.sendMessage(message.from, MESSAGES.message_2);
+            mensaje = MESSAGES.message_3 + message._data.notifyName + MESSAGES.message_4
+            client.sendMessage(message.from, mensaje);
+            client.sendMessage(message.from, MESSAGES.message_5);
+            client.sendMessage(message.from, MESSAGES.message_6);
+
+
+        } else if (["1", "2", "3", "4"].includes(arrayChat[posicion].opcion.toString().trim()) && arrayChat[posicion].state === "hours") {
+
+            hoursData = message.body.toString().trim();
+            hoursResponse = await HOURS_REGISTER.createRHours(hoursData);
+            console.log("HOURS: " + hoursResponse);
+
+            if (!hoursResponse) {
+
+                client.sendMessage(message.from, MESSAGES.message_14);
+
+            } else {
+
+                client.sendMessage(message.from, MESSAGES.message_15);
+                client.sendMessage(message.from, hoursResponse);
+
+            }
+
+            arrayChat[posicion].state = "option";
+            arrayChat[posicion].errores = 0;
+            arrayChat[posicion].opcion = 0;
+            client.sendMessage(message.from, MESSAGES.message_7);
+            client.sendMessage(message.from, MESSAGES.message_2);
+            mensaje = MESSAGES.message_3 + message._data.notifyName + MESSAGES.message_4
+            client.sendMessage(message.from, mensaje);
+            client.sendMessage(message.from, MESSAGES.message_5);
+            client.sendMessage(message.from, MESSAGES.message_6);
 
 
         } else {
