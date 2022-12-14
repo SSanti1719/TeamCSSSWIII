@@ -12,13 +12,15 @@
         tools:context=".MainActivity">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="414dp"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.666"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0">
 
             <TextView
                 android:id="@+id/lblTitAsignar"
@@ -65,44 +67,21 @@
                 android:layout_marginEnd="40dp" />
 
             <TextView
-                android:id="@+id/lblHorasComp"
-                android:layout_width="184dp"
+                android:id="@+id/lblAdminProyecto"
+                android:layout_width="227dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="40dp"
+                android:layout_marginStart="44dp"
                 android:layout_marginTop="40dp"
-                android:layout_marginEnd="227dp"
-                android:text="Horas Comprometidas" />
+                android:layout_marginEnd="297dp"
+                android:text="Gestor de Proyecto" />
 
-            <EditText
-                android:id="@+id/etHorasComp"
+            <Spinner
+                android:id="@+id/spAdminProyectos"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_marginStart="40dp"
-                android:layout_marginTop="17dp"
-                android:layout_marginEnd="40dp"
-                android:ems="10"
-                android:inputType="number" />
-
-            <TextView
-                android:id="@+id/lblFechaEntr"
-                android:layout_width="114dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="44dp"
-                android:layout_marginTop="38dp"
-                android:layout_marginEnd="258dp"
-                android:text="Fecha de Entrega" />
-
-            <EditText
-                android:id="@+id/etFechaEntr"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="40dp"
-                android:layout_marginTop="14dp"
-                android:layout_marginEnd="40dp"
-                android:inputType="date"
-                android:focusable="false"
-                android:clickable="true"
-                android:maxLines="1"/>
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="40dp" />
 
             <Button
                 android:id="@+id/btnAsignar"

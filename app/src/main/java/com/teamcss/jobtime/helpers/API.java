@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import com.teamcss.jobtime.model.Assign;
 import com.teamcss.jobtime.model.Employee;
 import com.teamcss.jobtime.model.Project;
+import com.teamcss.jobtime.model.ProjectManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,6 +33,7 @@ import java.security.KeyStore;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.sql.SQLOutput;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
@@ -41,7 +43,8 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class API {
 
-    private final String URL = "http://10.0.2.2:5286/api/";
+    private final String URL_GET = "http://10.0.2.2:5286/api/";
+    private final String URL_POST = "http://10.0.2.2:5286/";
     private Context context;
 
     public API(Context context) {
@@ -49,7 +52,7 @@ public class API {
     }
 
     public ArrayAdapter<Employee> getEmployees() throws IOException, GeneralSecurityException, CertificateException, JSONException {
-        URL obj = new URL(URL + "Employee/GetEmployee");
+        URL obj = new URL(URL_GET + "Employee/GetEmployee");
         ArrayAdapter<Employee> employees = new ArrayAdapter<Employee>(this.context, android.R.layout.simple_list_item_1);
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
@@ -85,7 +88,7 @@ public class API {
     }
 
     public ArrayAdapter<Project> getProjects() throws IOException, GeneralSecurityException, CertificateException, JSONException {
-        URL obj = new URL(URL + "Project/GetProject");
+        URL obj = new URL(URL_GET + "Project/GetProject");
         ArrayAdapter<Project> projects = new ArrayAdapter<Project>(this.context, android.R.layout.simple_list_item_1);
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
@@ -121,9 +124,46 @@ public class API {
         return projects;
     }
 
-    public void saveAssign(Assign assign) throws IOException {
-        URL obj = new URL(URL + "PostAssign");
-        String urlParameters  = "NitProjectManager=a&NitEmployee=b&NitProject=c";
+    public ArrayAdapter<ProjectManager> getProjectManagers() throws IOException, GeneralSecurityException, CertificateException, JSONException {
+        URL obj = new URL(URL_GET + "ProjectManager/GetProjectManager");
+        ArrayAdapter<ProjectManager> projectManagers = new ArrayAdapter<ProjectManager>(this.context, android.R.layout.simple_list_item_1);
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+                .permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        con.setRequestMethod("GET");
+        con.connect();
+        int responseCode = con.getResponseCode();
+        System.out.println("GET Response Code :: " + responseCode);
+        if (responseCode == HttpsURLConnection.HTTP_OK) { // success
+            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+
+            while ((inputLine = in.readLine()) != null) {
+                JSONArray arrayResponse = new JSONArray(inputLine);
+                for (int i = 0; i < arrayResponse.length(); i++) {
+                    JSONObject jsonObject = arrayResponse.getJSONObject(i);
+                    String nit = jsonObject.getString("Nit");
+                    String name = jsonObject.getString("Name");
+                    String email = jsonObject.getString("Email");
+                    String jobTitle = jsonObject.getString("JobTitle");
+                    projectManagers.add(new ProjectManager(nit, name, email, jobTitle));
+                }
+            }
+            in.close();
+        } else {
+            System.out.println("GET request did not work.");
+        }
+
+        return projectManagers;
+    }
+
+    public boolean saveAssign(Assign assign) throws IOException, JSONException {
+        URL obj = new URL(URL_POST + "PostAssign");
+        String urlParameters  = "NitProjectManager=" + assign.getNitProjectmanager() + "&NitEmployee=" + assign.getNitEmployee() + "&NitProject=" + assign.getNitProject();
         byte[] postData = urlParameters.getBytes( StandardCharsets.UTF_8 );
         int postDataLength = postData.length;
 
@@ -144,10 +184,24 @@ public class API {
         }
         con.connect();
         int responseCode = con.getResponseCode();
+        System.out.println("Response code: " + responseCode);
         if (responseCode == HttpsURLConnection.HTTP_OK) { // success
+            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
 
+            while ((inputLine = in.readLine()) != null) {
+                System.out.println(inputLine);
+                JSONObject jsonObject = new JSONObject(inputLine);
+                if (Integer.parseInt(jsonObject.getString("success")) == 1) {
+                    return true;
+                }
+            }
+
+            return false;
         } else {
             System.out.println("GET request did not work.");
+            return false;
         }
     }
 }

@@ -6,8 +6,7 @@ public class Assign {
     private String nitEmployee;
     private String nitProject;
 
-    public Assign(String id, String nitProjectmanager, String nitEmployee, String nitProject) {
-        this.id = id;
+    public Assign(String nitProjectmanager, String nitEmployee, String nitProject) {
         this.nitProjectmanager = nitProjectmanager;
         this.nitEmployee = nitEmployee;
         this.nitProject = nitProject;
